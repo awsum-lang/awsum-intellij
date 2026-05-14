@@ -33,6 +33,28 @@ intellijPlatform {
     }
 }
 
+val generatedSourcesDir = layout.buildDirectory.dir("generated/sources/buildConfig/kotlin/main")
+
+val generateBuildConfig by tasks.registering {
+    val outputDir = generatedSourcesDir
+    val pluginVersion = providers.gradleProperty("pluginVersion")
+    inputs.property("pluginVersion", pluginVersion)
+    outputs.dir(outputDir)
+    doLast {
+        val file = outputDir.get().asFile.resolve("org/awsumlang/awsum/BuildConfig.kt")
+        file.parentFile.mkdirs()
+        file.writeText(
+            """package org.awsumlang.awsum
+
+internal object BuildConfig {
+    const val PLUGIN_VERSION: String = "${pluginVersion.get()}"
+}
+"""
+        )
+    }
+}
+
 kotlin {
     jvmToolchain(21)
+    sourceSets["main"].kotlin.srcDir(generateBuildConfig.map { generatedSourcesDir })
 }

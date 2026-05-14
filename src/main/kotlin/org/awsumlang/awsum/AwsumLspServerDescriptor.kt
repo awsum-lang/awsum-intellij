@@ -1,8 +1,6 @@
 package org.awsumlang.awsum
 
 import com.intellij.execution.configurations.GeneralCommandLine
-import com.intellij.ide.plugins.PluginManagerCore
-import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.lsp.api.ProjectWideLspServerDescriptor
@@ -21,7 +19,7 @@ class AwsumLspServerDescriptor(project: Project) :
 
     override fun createInitializationOptions(): Any =
         mapOf(
-            "expectedAwsumVersion" to pluginVersion(),
+            "expectedAwsumVersion" to BuildConfig.PLUGIN_VERSION,
             "preferButtonsOverLinks" to true,
         )
 
@@ -33,12 +31,5 @@ class AwsumLspServerDescriptor(project: Project) :
                 serverExplicitlyWantsToFormatThisFile: Boolean,
             ): Boolean = file.extension == "aww"
         }
-    }
-
-    private fun pluginVersion(): String =
-        PluginManagerCore.getPlugin(PluginId.getId(PLUGIN_ID))?.version ?: "unknown"
-
-    companion object {
-        private const val PLUGIN_ID = "org.awsumlang.awsum"
     }
 }
