@@ -1,0 +1,23 @@
+<idea-plugin>
+    <id>org.awsumlang.awsum</id>
+    <name>Awsum</name>
+    <vendor email="vladimir@logachev.dev" url="https://awsum-lang.org">awsum-lang</vendor>
+
+    <description><![CDATA[
+        Awsum language support for IntelliJ-based IDEs.<br/>
+        Thin LSP client to <code>awsum lsp</code> from the compiler.<br/>
+        Syntax highlighting via the shared TextMate grammar.
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>org.jetbrains.plugins.textmate</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <platform.lsp.serverSupportProvider
+            implementation="org.awsumlang.awsum.AwsumLspServerSupportProvider"/>
+    </extensions>
+
+    <extensions defaultExtensionNs="com.intellij.textmate">
+        <bundleProvider implementation="org.awsumlang.awsum.AwsumTextMateBundleProvider"/>
+    </extensions>
+</idea-plugin>

@@ -1,0 +1,22 @@
+{
+  "name": "awsum",
+  "version": "0.0.1",
+  "description": "Awsum TextMate grammar",
+  "contributes": {
+    "languages": [
+      {
+        "id": "awsum",
+        "aliases": ["Awsum"],
+        "extensions": [".aww"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "awsum",
+        "scopeName": "source.awsum",
+        "path": "./syntaxes/awsum.tmLanguage.json"
+      }
+    ]
+  }
+}
