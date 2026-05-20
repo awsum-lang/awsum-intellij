@@ -20,6 +20,14 @@ Works in IntelliJ IDEA (free tier) and every Ultimate-tier JetBrains IDE (Rider,
 
 If `awsum` is not on your `PATH`, IntelliJ inherits `PATH` from the shell that launched it. Either launch IDEA from a terminal where `awsum` resolves, or use Toolbox / Spotlight with a `PATH` configured via your shell's startup files. There is no extension-level setting for the binary path today.
 
+## Actions
+
+| Action                                  | Default keybinding | What it does                                                                                  |
+| --------------------------------------- | ------------------ | --------------------------------------------------------------------------------------------- |
+| `Restart Awsum LSP server`              | —                  | Stops the `awsum lsp` process and starts a new one with the same settings. Useful after a local `stack install` of a new `awsum` build, or to clear any in-memory state on the server. |
+
+Invoke via `Help` → `Find Action…` (`Cmd+Shift+A` / `Ctrl+Shift+A`) and type the action name. Bind it to a keybinding via Settings → Keymap if you use it often.
+
 ## Versioning
 
 `awsum-intellij A.B.C` is built and tested against `awsum A.B.C`. Mismatched versions are not supported — at startup the LSP server compares the plugin's expected version against its own and shows a non-blocking notification on mismatch, with an action button that opens the install page.
