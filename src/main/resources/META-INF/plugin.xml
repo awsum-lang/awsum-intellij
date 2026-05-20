@@ -20,4 +20,12 @@
     <extensions defaultExtensionNs="com.intellij.textmate">
         <bundleProvider implementation="org.awsumlang.awsum.AwsumTextMateBundleProvider"/>
     </extensions>
+
+    <actions>
+        <action id="org.awsumlang.awsum.RestartLspServer"
+                class="org.awsumlang.awsum.RestartLspServerAction"
+                text="Restart Awsum LSP server"
+                description="Stop the awsum lsp process and start a new one with the same settings.">
+        </action>
+    </actions>
 </idea-plugin>
