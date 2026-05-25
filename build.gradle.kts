@@ -33,6 +33,13 @@ intellijPlatform {
     }
 }
 
+// LICENSE/NOTICE are not auto-bundled into IntelliJ plugin JARs; copy them
+// into META-INF/ so they ship with the artefact.
+tasks.processResources {
+    from(layout.projectDirectory.file("LICENSE")) { into("META-INF") }
+    from(layout.projectDirectory.file("NOTICE")) { into("META-INF") }
+}
+
 val generatedSourcesDir = layout.buildDirectory.dir("generated/sources/buildConfig/kotlin/main")
 
 val generateBuildConfig by tasks.registering {
