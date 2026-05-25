@@ -23,13 +23,10 @@ jobs:
           distribution: temurin
           java-version: "21"
 
-      # Validates `gradle/wrapper/gradle-wrapper.jar` against Gradle's published
-      # known-good SHAs — protects against supply-chain tampering of the jar.
-      - name: Validate Gradle Wrapper
-        uses: gradle/actions/wrapper-validation@v3
-
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          validate-wrappers: true # supply-chain guard for gradle-wrapper.jar
 
       # `buildPlugin` produces build/distributions/awsum-intellij-A.B.C.zip.
       # `verifyPlugin` runs IntelliJ Plugin Verifier against the target IDE.
