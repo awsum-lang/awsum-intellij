@@ -10,6 +10,8 @@ Until `awsum 1.0.0`, the project does not follow SemVer — every release increm
 
 ## [Unreleased]
 
+## [0.0.5] - 2026-05-31
+
 ### Added
 
 - `Restart Awsum LSP server` action (id `org.awsumlang.awsum.RestartLspServer`) — calls `LspServerManager.stopAndRestartIfNeeded(AwsumLspServerDescriptor::class.java)` to stop the `awsum lsp` process and start a new one with the same `initializationOptions`. Useful after a local `stack install` of a new `awsum` build, or to clear any in-memory state on the server. Invoke via Find Action (`Cmd+Shift+A` / `Ctrl+Shift+A`); no default keybinding.
