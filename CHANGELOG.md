@@ -10,6 +10,11 @@ Until `awsum 1.0.0`, the project does not follow SemVer — every release increm
 
 ## [Unreleased]
 
+### Changed
+
+- Requires IntelliJ IDEA 2026.2 or newer (`pluginSinceBuild = 262`; previously 2026.1). The plugin now uses the LSP API names 2026.2 introduced — `LspIntegrationProvider`, `ProjectWideLspClientDescriptor`, `LspClientManager.stopAndRestartClientsIfNeeded` — in place of the `*Server*` names 2026.2 deprecates, so the IntelliJ Plugin Verifier reports no deprecated-API usages. Behaviour is unchanged; the source files are renamed to match (`AwsumLspIntegrationProvider.kt`, `AwsumLspClientDescriptor.kt`).
+- Build: IntelliJ Platform Gradle plugin 2.16.0 → 2.18.1, which carries the Kotlin / Java version mappings for the 262 platform.
+
 ### Fixed
 
 - Syntax highlighting no longer extends an identifier across a non-ASCII letter — the grammar's identifier patterns are now ASCII `[A-Za-z0-9_']`, matching the compiler, which rejects non-ASCII identifiers. Previously the TextMate `\w` matched Unicode, so a name like `funcλ` was highlighted as one valid identifier.

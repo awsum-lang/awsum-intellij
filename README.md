@@ -2,7 +2,7 @@
 
 IntelliJ Platform plugin for the [Awsum](https://awsum-lang.org) programming language (`.aww` files). A thin LSP client to the `awsum lsp` server bundled with the Awsum compiler — every diagnostic, code action, format edit, document symbol, and workspace symbol is computed inside the `awsum` compiler binary and pushed over LSP.
 
-Works in IntelliJ IDEA (free tier) and every Ultimate-tier JetBrains IDE (Rider, CLion, WebStorm, PyCharm Pro, GoLand, …). The native LSP API has been open to all users since IDEA 2025.2, and Community / Ultimate were merged into one product in 2025.3.
+Works in IntelliJ IDEA (free tier) and every Ultimate-tier JetBrains IDE (Rider, CLion, WebStorm, PyCharm Pro, GoLand, …). Requires IDEA 2026.2 or newer.
 
 ## Features
 
@@ -47,9 +47,10 @@ JDK 21 is required; `settings.gradle.kts` declares `foojay-resolver-convention` 
 ### Structure
 
 ```
-src/main/kotlin/dev/awsumlang/intellij/
-  AwsumLspServerSupportProvider.kt    # extension point; spawns descriptor on .aww open
-  AwsumLspServerDescriptor.kt         # `awsum lsp --stdio`, version handshake, format-via-server override
+src/main/kotlin/org/awsumlang/awsum/
+  AwsumLspIntegrationProvider.kt      # extension point; spawns descriptor on .aww open
+  AwsumLspClientDescriptor.kt         # `awsum lsp --stdio`, version handshake, format-via-server override
+  RestartLspServerAction.kt           # "Restart Awsum LSP server" action
   AwsumTextMateBundleProvider.kt      # exposes the bundled TextMate grammar to IDEA
 src/main/resources/
   META-INF/plugin.xml                 # plugin manifest (id, vendor, extension registrations)
@@ -59,7 +60,7 @@ src/main/resources/
 ### Architecture
 
 - **Single source of truth.** `awsum-intellij` does no language-aware processing. All semantics live in [`awsum/src/Awsum/Lsp.hs`](https://github.com/awsum-lang/awsum) (the LSP server) and the modules it reuses (`Awsum.Diagnostic`, `Awsum.Symbols`, `Awsum.Format`, `Awsum.ElaborateLower`, …).
-- **No custom providers.** Everything routes through the IntelliJ Platform's native LSP API (`com.intellij.platform.lsp.api.LspServerSupportProvider`, `ProjectWideLspServerDescriptor`, `LspCustomization`). Anything you'd want to add for IDEA is best added on the LSP server side first — that way `awsum-vscode`, `awsum-zed`, and any other LSP client benefit too.
+- **No custom providers.** Everything routes through the IntelliJ Platform's native LSP API (`com.intellij.platform.lsp.api.LspIntegrationProvider`, `ProjectWideLspClientDescriptor`, `LspCustomization`) — the names IDEA 2026.2 introduced, which is what pins `pluginSinceBuild = 262`. Anything you'd want to add for IDEA is best added on the LSP server side first — that way `awsum-vscode`, `awsum-zed`, and any other LSP client benefit too.
 
 ## Related
 
