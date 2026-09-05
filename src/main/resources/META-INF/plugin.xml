@@ -13,8 +13,8 @@
     <depends>org.jetbrains.plugins.textmate</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <platform.lsp.serverSupportProvider
-            implementation="org.awsumlang.awsum.AwsumLspServerSupportProvider"/>
+        <platform.lsp.integrationProvider
+            implementation="org.awsumlang.awsum.AwsumLspIntegrationProvider"/>
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij.textmate">
