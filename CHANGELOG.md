@@ -4,20 +4,27 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-`awsum-intellij` is versioned 1:1 with the `awsum` compiler — the extension's `A.B.C` is exactly the `awsum` `A.B.C` it targets. All three IDE plugins (`awsum-vscode`, `awsum-zed`, `awsum-intellij`) handshake the compiler version at LSP startup; collapsing the plugin and compiler version axes into one keeps that handshake trivial — no per-plugin compatibility table to maintain. Every `awsum` release ships a matching extension release, the extension is never released ahead of the compiler, and only the latest `awsum` release is supported.
+`awsum-intellij` is versioned 1:1 with the `awsum` compiler — the extension's `A.B.C` is exactly the `awsum` `A.B.C` it targets. All five editor plugins (`awsum-vscode`, `awsum-zed`, `awsum-intellij`, `awsum-nvim`, `awsum-emacs`) handshake the compiler version at LSP startup; collapsing the plugin and compiler version axes into one keeps that handshake trivial — no per-plugin compatibility table to maintain. Every `awsum` release ships a matching extension release, the extension is never released ahead of the compiler, and only the latest `awsum` release is supported.
 
 Until `awsum 1.0.0`, the project does not follow SemVer — every release increments only the patch (`0.0.1 → 0.0.2 …`), and any release may break. The 1:1 lockstep above is the contract that does hold: within a single `0.0.x`, the extension and the `awsum` it ships against are mutually compatible.
 
 ## [Unreleased]
 
+## [0.0.8] - 2026-11-08
+
 ### Changed
 
 - Requires IntelliJ IDEA 2026.2 or newer (`pluginSinceBuild = 262`; previously 2026.1). The plugin now uses the LSP API names 2026.2 introduced — `LspIntegrationProvider`, `ProjectWideLspClientDescriptor`, `LspClientManager.stopAndRestartClientsIfNeeded` — in place of the `*Server*` names 2026.2 deprecates, so the IntelliJ Plugin Verifier reports no deprecated-API usages. Behaviour is unchanged; the source files are renamed to match (`AwsumLspIntegrationProvider.kt`, `AwsumLspClientDescriptor.kt`).
-- Build: IntelliJ Platform Gradle plugin 2.16.0 → 2.18.1, which carries the Kotlin / Java version mappings for the 262 platform.
+- Build: IntelliJ Platform Gradle plugin 2.16.0 → 2.19.0 (2.17.0 carries the Kotlin / Java version mappings for the 262 platform), Kotlin 2.4.0 → 2.4.21, Gradle 9.5.0 → 9.8.2.
+- Builds against IntelliJ IDEA 2026.2.4 (previously 2026.2.2), the newest 2026.2 patch at least 7 days old; 2026.3 (released 2026-11-05) is still inside the 7-day window, so the minimum stays 2026.2. `verifyPlugin` now checks both the minimum and the newest IDE release.
+- CI: every GitHub Action pinned to the commit SHA of a release at least 7 days old (`actions/setup-java` v5 → v6); the JDK is pinned to Temurin 21.0.13.
+- The README no longer claims format on save out of the box: IntelliJ reformats on save only once Settings → Tools → Actions on Save → Reformat code is on, and the README now says so.
+- The README lists hover (type and doc comment of the name under the cursor). `awsum lsp` has served it since 0.0.5; only the documentation was missing it.
 
 ### Fixed
 
 - Syntax highlighting no longer extends an identifier across a non-ASCII letter — the grammar's identifier patterns are now ASCII `[A-Za-z0-9_']`, matching the compiler, which rejects non-ASCII identifiers. Previously the TextMate `\w` matched Unicode, so a name like `funcλ` was highlighted as one valid identifier.
+- Block comments are now highlighted in `import` lines, type signatures, `type` declarations, and function parameters. In those positions the grammar didn't recognise `{- … -}` at all, so in `pick : Pick {- note -} -> Int32` the comment's words were coloured as types.
 
 ## [0.0.7] - 2026-06-22
 

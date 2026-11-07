@@ -1,7 +1,7 @@
 plugins {
     id("java")
-    kotlin("jvm") version "2.4.0"
-    id("org.jetbrains.intellij.platform") version "2.18.1"
+    kotlin("jvm") version "2.4.21"
+    id("org.jetbrains.intellij.platform") version "2.19.0"
 }
 
 group = providers.gradleProperty("pluginGroup").get()
@@ -29,6 +29,14 @@ intellijPlatform {
         ideaVersion {
             sinceBuild = providers.gradleProperty("pluginSinceBuild")
             untilBuild = provider { null }
+        }
+    }
+    // Verify against the declared minimum (the platform we build against) and
+    // the newest IDE release, which the open untilBuild already claims.
+    pluginVerification {
+        ides {
+            current()
+            latest()
         }
     }
 }

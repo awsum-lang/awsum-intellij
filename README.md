@@ -1,15 +1,16 @@
 # Awsum language support for IntelliJ IDEA
 
-IntelliJ Platform plugin for the [Awsum](https://awsum-lang.org) programming language (`.aww` files). A thin LSP client to the `awsum lsp` server bundled with the Awsum compiler — every diagnostic, code action, format edit, document symbol, and workspace symbol is computed inside the `awsum` compiler binary and pushed over LSP.
+IntelliJ Platform plugin for the [Awsum](https://awsum-lang.org) programming language (`.aww` files). A thin LSP client to the `awsum lsp` server bundled with the Awsum compiler — every diagnostic, code action, format edit, hover, document symbol, and workspace symbol is computed inside the `awsum` compiler binary and pushed over LSP.
 
 Works in IntelliJ IDEA (free tier) and every Ultimate-tier JetBrains IDE (Rider, CLion, WebStorm, PyCharm Pro, GoLand, …). Requires IDEA 2026.2 or newer.
 
 ## Features
 
 - **Syntax highlighting** — TextMate grammar shared with [`awsum-vscode`](https://github.com/awsum-lang/awsum-vscode).
-- **Format on save / reformat code** — `textDocument/formatting`, same algorithm as `awsum format`.
+- **Formatting (Reformat Code)** — `textDocument/formatting`, same algorithm as `awsum format`. To format on save, turn on Settings → Tools → Actions on Save → Reformat code.
 - **Inline diagnostics** — `textDocument/publishDiagnostics`, pushed on open / save / change (debounced 500 ms server-side). `error` vs `warning` severity honoured by the IDEA Problems panel.
 - **Quick fixes (intention actions)** — `textDocument/codeAction`. Compiler-supplied fixes only; the plugin does no language-aware reasoning.
+- **Hover / Quick Documentation** — `textDocument/hover`. The type of the name under the cursor (for a polymorphic reference, also its type at that call site) and its doc comment, for user and prelude names alike.
 - **Document outline (Structure view, breadcrumbs)** — `textDocument/documentSymbol`.
 - **Workspace symbol search (`Cmd+O` / `Ctrl+Shift+N`)** — `workspace/symbol`. The server walks every `.aww` under the workspace folders received at `initialize`.
 
@@ -32,7 +33,9 @@ Invoke via `Help` → `Find Action…` (`Cmd+Shift+A` / `Ctrl+Shift+A`) and type
 
 `awsum-intellij A.B.C` is built and tested against `awsum A.B.C`. Mismatched versions are not supported — at startup the LSP server compares the plugin's expected version against its own and shows a non-blocking notification on mismatch, with an action button that opens the install page.
 
-The lockstep policy is shared across all three IDE plugins (`awsum-vscode`, `awsum-zed`, `awsum-intellij`) — see [CHANGELOG.md](CHANGELOG.md) for the reasoning.
+The lockstep policy is shared across all five editor plugins (`awsum-vscode`, `awsum-zed`, `awsum-intellij`, `awsum-nvim`, `awsum-emacs`) — see [CHANGELOG.md](CHANGELOG.md) for the reasoning.
+
+Supported editor versions follow Awsum's [platform version policy](https://github.com/awsum-lang/awsum/blob/main/docs/platform-version-policy.md#editors): the minimum is the newest stable release that has been out for at least 7 days.
 
 ## Development
 
@@ -60,7 +63,7 @@ src/main/resources/
 ### Architecture
 
 - **Single source of truth.** `awsum-intellij` does no language-aware processing. All semantics live in [`awsum/src/Awsum/Lsp.hs`](https://github.com/awsum-lang/awsum) (the LSP server) and the modules it reuses (`Awsum.Diagnostic`, `Awsum.Symbols`, `Awsum.Format`, `Awsum.ElaborateLower`, …).
-- **No custom providers.** Everything routes through the IntelliJ Platform's native LSP API (`com.intellij.platform.lsp.api.LspIntegrationProvider`, `ProjectWideLspClientDescriptor`, `LspCustomization`) — the names IDEA 2026.2 introduced, which is what pins `pluginSinceBuild = 262`. Anything you'd want to add for IDEA is best added on the LSP server side first — that way `awsum-vscode`, `awsum-zed`, and any other LSP client benefit too.
+- **No custom providers.** Everything routes through the IntelliJ Platform's native LSP API (`com.intellij.platform.lsp.api.LspIntegrationProvider`, `ProjectWideLspClientDescriptor`, `LspCustomization`) — the names IDEA 2026.2 introduced, which put the floor of `pluginSinceBuild` at 262. Anything you'd want to add for IDEA is best added on the LSP server side first — that way `awsum-vscode`, `awsum-zed`, and any other LSP client benefit too.
 
 ## Related
 
@@ -72,7 +75,7 @@ src/main/resources/
 
 ## AI use
 
-This IntelliJ Platform plugin is developed with substantial usage of generative AI. Every generated change is reviewed, edited, and accepted by a human before it lands in the repository, and no output is shipped unedited.
+This IntelliJ Platform plugin is developed with substantial usage of generative AI.
 
 ## License
 
