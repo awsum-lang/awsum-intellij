@@ -14,7 +14,7 @@ See [README.md](README.md) for an overview. Quick reference:
 
 The build uses `gradle/wrapper/gradle-wrapper.jar` to download the right Gradle version automatically — you don't need a system Gradle. JDK 21 is required; `settings.gradle.kts` declares `foojay-resolver-convention` so Gradle will auto-download Adoptium Temurin 21 on first build if you don't have a local JDK 21 (Gradle stores it under `~/.gradle/jdks/`).
 
-The extension shells out to the `awsum` CLI for every editor feature (diagnostics, formatting, code actions, document and workspace symbols) — install it from the [compiler repo](https://github.com/awsum-lang/awsum) and make sure `awsum` is on your `PATH` before testing changes that touch those features.
+Every editor feature (diagnostics, formatting, code actions, hover, document and workspace symbols) comes from the `awsum lsp` server inside the compiler binary — install it from the [compiler repo](https://github.com/awsum-lang/awsum) and make sure `awsum` is on your `PATH` before testing changes that touch those features.
 
 ## Developer Certificate of Origin
 
