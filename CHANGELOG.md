@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-`awsum-intellij` is versioned 1:1 with the `awsum` compiler — the extension's `A.B.C` is exactly the `awsum` `A.B.C` it targets. All five editor plugins (`awsum-vscode`, `awsum-zed`, `awsum-intellij`, `awsum-nvim`, `awsum-emacs`) handshake the compiler version at LSP startup; collapsing the plugin and compiler version axes into one keeps that handshake trivial — no per-plugin compatibility table to maintain. Every `awsum` release ships a matching extension release, the extension is never released ahead of the compiler, and only the latest `awsum` release is supported.
+`awsum-intellij` is versioned 1:1 with the `awsum` compiler — the extension's `A.B.C` is exactly the `awsum` `A.B.C` it targets. Every Awsum editor plugin handshakes the compiler version at LSP startup; collapsing the plugin and compiler version axes into one keeps that handshake trivial — no per-plugin compatibility table to maintain. Every `awsum` release ships a matching extension release, the extension is never released ahead of the compiler, and only the latest `awsum` release is supported.
 
 Until `awsum 1.0.0`, the project does not follow SemVer — every release increments only the patch (`0.0.1 → 0.0.2 …`), and any release may break. The 1:1 lockstep above is the contract that does hold: within a single `0.0.x`, the extension and the `awsum` it ships against are mutually compatible.
 
@@ -13,6 +13,11 @@ Until `awsum 1.0.0`, the project does not follow SemVer — every release increm
 ### Changed
 
 - `Restart Awsum LSP server` now restarts the running server from its own descriptor, as the Language Services widget's Restart button does since IntelliJ IDEA 2026.3, so the server comes back even when no `.aww` tab is open. Previously it stopped the server and started a new one only if a `.aww` file was open. The action stays where the widget's button can't be: in Find Action, bindable to a keyboard shortcut.
+
+### Fixed
+
+- The TextMate grammar is no longer copied to a temporary directory on every IDE start. It now ships as plain files in the plugin directory (`textmate/awsum/`), and the IDE reads it in place. The copy left an empty `awsum-textmate-*/syntaxes/` directory in the system temp folder after every exit, and all three bundle files after a crash.
+- The plugin now declares its dependency on the LSP module, `com.intellij.modules.lsp`. Without it the plugin counted as compatible with IDEs that have no LSP API, such as Android Studio and IntelliJ IDEA open-source builds, where it would install with syntax highlighting only. It deliberately does not depend on `com.intellij.modules.ultimate`, which the SDK documentation still lists: IntelliJ IDEA without a subscription disables that module, and every plugin that depends on it.
 
 ## [0.0.8] - 2026-11-08
 
@@ -51,7 +56,7 @@ No user-facing changes to the plugin itself; this release tracks the compiler ve
 ### Added
 
 - Initial release. Thin LSP client to `awsum lsp --stdio` (subcommand of the `awsum` compiler binary). Every editor feature is computed inside the compiler and pushed over LSP:
-  - **Syntax highlighting** via the shared TextMate grammar (mirrored from [`awsum-lang/awsum-vscode`](https://github.com/awsum-lang/awsum-vscode); IntelliJ-bundled TextMate plugin consumes the same VSCode-style bundle layout).
+  - **Syntax highlighting** via a TextMate grammar, read by IntelliJ's bundled TextMate plugin.
   - **Format on save** via `textDocument/formatting` — same algorithm as `awsum format`. `LspFormattingSupport.shouldFormatThisFileExclusivelyByServer` is overridden to delegate `.aww` files exclusively to the server even when IDEA's default TextMate-tier formatter would otherwise no-op.
   - **Inline diagnostics** via `textDocument/publishDiagnostics` (debounced 500 ms server-side; `error` / `warning` severity honoured by the IDEA Problems panel).
   - **Quick fixes** via `textDocument/codeAction` — compiler-supplied fixes only; the extension does no language-aware reasoning.
@@ -62,4 +67,4 @@ No user-facing changes to the plugin itself; this release tracks the compiler ve
 - Build provenance via `actions/attest-build-provenance@v4` on the published `.zip` — each release asset gets a Sigstore-signed attestation tying it to the release workflow run and the tagged commit. Users verify with `gh attestation verify awsum-intellij-X.Y.Z.zip --repo awsum-lang/awsum-intellij`.
 - Gradle Wrapper validation via `gradle/actions/wrapper-validation@v3` on every CI run — protects against supply-chain tampering of `gradle/wrapper/gradle-wrapper.jar`.
 - `CONTRIBUTING.md` — covers the dev-loop commands, the signed-commits requirement on `main`, and the PR / CHANGELOG conventions.
-- `justfile` with a single user-facing `just release` recipe — checks out `main`, pulls, reads the version from `gradle.properties`, asks the operator to type the version back as confirmation, then creates an annotated tag and pushes it. Mirrors the same recipe in `awsum/justfile`, `awsum-vscode/justfile`, and `awsum-zed/justfile`.
+- `justfile` with a single user-facing `just release` recipe — checks out `main`, pulls, reads the version from `gradle.properties`, asks the operator to type the version back as confirmation, then creates an annotated tag and pushes it. Mirrors the same recipe in the compiler's and the other editor plugins' justfiles.
