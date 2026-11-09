@@ -25,9 +25,9 @@ If `awsum` is not on your `PATH`, IntelliJ inherits `PATH` from the shell that l
 
 | Action                                  | Default keybinding | What it does                                                                                  |
 | --------------------------------------- | ------------------ | --------------------------------------------------------------------------------------------- |
-| `Restart Awsum LSP server`              | —                  | Stops the `awsum lsp` process and starts a new one with the same settings. Useful after a local `stack install` of a new `awsum` build, or to clear any in-memory state on the server. |
+| `Restart Awsum LSP server`              | —                  | Stops the `awsum lsp` process and starts a new one with the same settings, even when no `.aww` tab is open. Useful after a local `stack install` of a new `awsum` build, or to clear any in-memory state on the server. |
 
-Invoke via `Help` → `Find Action…` (`Cmd+Shift+A` / `Ctrl+Shift+A`) and type the action name. Bind it to a keybinding via Settings → Keymap if you use it often.
+Invoke via `Help` → `Find Action…` (`Cmd+Shift+A` / `Ctrl+Shift+A`) and type the action name. Bind it to a keybinding via Settings → Keymap if you use it often. The Restart button in the Language Services status bar widget does the same by mouse, but it has no action ID, so Find Action and Keymap can't reach it — this action is what they reach.
 
 ## Versioning
 
