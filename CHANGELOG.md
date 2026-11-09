@@ -14,6 +14,10 @@ Until `awsum 1.0.0`, the project does not follow SemVer — every release increm
 
 - `Restart Awsum LSP server` now restarts the running server from its own descriptor, as the Language Services widget's Restart button does since IntelliJ IDEA 2026.3, so the server comes back even when no `.aww` tab is open. Previously it stopped the server and started a new one only if a `.aww` file was open. The action stays where the widget's button can't be: in Find Action, bindable to a keyboard shortcut.
 
+### Fixed
+
+- The plugin now declares the two dependencies the IntelliJ Platform LSP documentation requires, `com.intellij.modules.lsp` and `com.intellij.modules.ultimate`. Without them it counted as compatible with IDEs that have no LSP API, such as Android Studio and IntelliJ IDEA open-source builds, where it would install with syntax highlighting only.
+
 ## [0.0.8] - 2026-11-08
 
 ### Changed
