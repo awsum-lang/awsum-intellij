@@ -10,6 +10,10 @@ Until `awsum 1.0.0`, the project does not follow SemVer — every release increm
 
 ## [Unreleased]
 
+### Changed
+
+- `Restart Awsum LSP server` now restarts the running server from its own descriptor, as the Language Services widget's Restart button does since IntelliJ IDEA 2026.3, so the server comes back even when no `.aww` tab is open. Previously it stopped the server and started a new one only if a `.aww` file was open. The action stays where the widget's button can't be: in Find Action, bindable to a keyboard shortcut.
+
 ## [0.0.8] - 2026-11-08
 
 ### Changed
