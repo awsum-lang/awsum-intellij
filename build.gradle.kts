@@ -48,6 +48,16 @@ tasks.processResources {
     from(layout.projectDirectory.file("NOTICE")) { into("META-INF") }
 }
 
+// The TextMate API takes a directory on disk, which a resource inside the plugin
+// JAR is not, so the bundle ships as plain files next to the JAR:
+// <plugin>/textmate/awsum/, read in place by AwsumTextMateBundleProvider.
+// Every sandbox gets it: buildPlugin zips prepareSandbox's, and runIde has its own.
+tasks.withType<org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask>().configureEach {
+    from(layout.projectDirectory.dir("src/main/textmate")) {
+        into(pluginName.map { "$it/textmate" })
+    }
+}
+
 val generatedSourcesDir = layout.buildDirectory.dir("generated/sources/buildConfig/kotlin/main")
 
 val generateBuildConfig by tasks.registering {

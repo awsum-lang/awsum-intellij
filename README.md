@@ -6,7 +6,7 @@ Works in IntelliJ IDEA (free tier) and every Ultimate-tier JetBrains IDE (Rider,
 
 ## Features
 
-- **Syntax highlighting** — TextMate grammar shared with [`awsum-vscode`](https://github.com/awsum-lang/awsum-vscode).
+- **Syntax highlighting** — a TextMate grammar, read by IntelliJ's bundled TextMate plugin.
 - **Formatting (Reformat Code)** — `textDocument/formatting`, same algorithm as `awsum format`. To format on save, turn on Settings → Tools → Actions on Save → Reformat code.
 - **Inline diagnostics** — `textDocument/publishDiagnostics`, pushed on open / save / change (debounced 500 ms server-side). `error` vs `warning` severity honoured by the IDEA Problems panel.
 - **Quick fixes (intention actions)** — `textDocument/codeAction`. Compiler-supplied fixes only; the plugin does no language-aware reasoning.
@@ -23,9 +23,9 @@ If `awsum` is not on your `PATH`, IntelliJ inherits `PATH` from the shell that l
 
 ## Actions
 
-| Action                                  | Default keybinding | What it does                                                                                  |
-| --------------------------------------- | ------------------ | --------------------------------------------------------------------------------------------- |
-| `Restart Awsum LSP server`              | —                  | Stops the `awsum lsp` process and starts a new one with the same settings, even when no `.aww` tab is open. Useful after a local `stack install` of a new `awsum` build, or to clear any in-memory state on the server. |
+| Action                     | Default keybinding | What it does                                                                                                                                                                                                            |
+| -------------------------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Restart Awsum LSP server` | —                  | Stops the `awsum lsp` process and starts a new one with the same settings, even when no `.aww` tab is open. Useful after a local `stack install` of a new `awsum` build, or to clear any in-memory state on the server. |
 
 Invoke via `Help` → `Find Action…` (`Cmd+Shift+A` / `Ctrl+Shift+A`) and type the action name. Bind it to a keybinding via Settings → Keymap if you use it often. The Restart button in the Language Services status bar widget does the same by mouse, but it has no action ID, so Find Action and Keymap can't reach it — this action is what they reach.
 
@@ -33,7 +33,7 @@ Invoke via `Help` → `Find Action…` (`Cmd+Shift+A` / `Ctrl+Shift+A`) and type
 
 `awsum-intellij A.B.C` is built and tested against `awsum A.B.C`. Mismatched versions are not supported — at startup the LSP server compares the plugin's expected version against its own and shows a non-blocking notification on mismatch, with an action button that opens the install page.
 
-The lockstep policy is shared across all five editor plugins (`awsum-vscode`, `awsum-zed`, `awsum-intellij`, `awsum-nvim`, `awsum-emacs`) — see [CHANGELOG.md](CHANGELOG.md) for the reasoning.
+Every Awsum editor plugin follows the same lockstep policy — see [CHANGELOG.md](CHANGELOG.md) for the reasoning.
 
 Supported editor versions follow Awsum's [platform version policy](https://github.com/awsum-lang/awsum/blob/main/docs/platform-version-policy.md#editors): the minimum is the newest stable release that has been out for at least 7 days.
 
@@ -54,16 +54,19 @@ src/main/kotlin/org/awsumlang/awsum/
   AwsumLspIntegrationProvider.kt      # extension point; spawns descriptor on .aww open
   AwsumLspClientDescriptor.kt         # `awsum lsp --stdio`, version handshake, format-via-server override
   RestartLspServerAction.kt           # "Restart Awsum LSP server" action
-  AwsumTextMateBundleProvider.kt      # exposes the bundled TextMate grammar to IDEA
+  AwsumTextMateBundleProvider.kt      # points the IDE at the TextMate bundle in the plugin directory
 src/main/resources/
   META-INF/plugin.xml                 # plugin manifest (id, vendor, extension registrations)
-  textmate/awsum/                     # VSCode-style TextMate bundle (package.json + grammar + language-configuration)
+src/main/textmate/
+  awsum/                              # TextMate bundle (package.json + grammar + language-configuration)
 ```
+
+The TextMate bundle ships as plain files next to the plugin JAR (`<plugin>/textmate/awsum/`), copied there by `prepareSandbox` in `build.gradle.kts`: the TextMate API takes a directory on disk, which a resource inside the JAR is not.
 
 ### Architecture
 
 - **Single source of truth.** `awsum-intellij` does no language-aware processing. All semantics live in [`awsum/src/Awsum/Lsp.hs`](https://github.com/awsum-lang/awsum) (the LSP server) and the modules it reuses (`Awsum.Diagnostic`, `Awsum.Symbols`, `Awsum.Format`, `Awsum.ElaborateLower`, …).
-- **No custom providers.** Everything routes through the IntelliJ Platform's native LSP API (`com.intellij.platform.lsp.api.LspIntegrationProvider`, `ProjectWideLspClientDescriptor`, `LspCustomization`) — the names IDEA 2026.2 introduced, which put the floor of `pluginSinceBuild` at 262. Anything you'd want to add for IDEA is best added on the LSP server side first — that way `awsum-vscode`, `awsum-zed`, and any other LSP client benefit too.
+- **No custom providers.** Everything routes through the IntelliJ Platform's native LSP API (`com.intellij.platform.lsp.api.LspIntegrationProvider`, `ProjectWideLspClientDescriptor`, `LspCustomization`) — the names IDEA 2026.2 introduced, which put the floor of `pluginSinceBuild` at 262. Anything you'd want to add for IDEA is best added on the LSP server side first — that way every other LSP client benefits too.
 
 ## Related
 

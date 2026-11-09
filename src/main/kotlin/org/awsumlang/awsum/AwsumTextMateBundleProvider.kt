@@ -1,29 +1,16 @@
 package org.awsumlang.awsum
 
+import com.intellij.openapi.application.PluginPathManager
 import org.jetbrains.plugins.textmate.api.TextMateBundleProvider
-import java.nio.file.Files
-import java.nio.file.Path
 
+/**
+ * The TextMate API takes a directory on disk, so the bundle ships as plain files in the plugin's distribution
+ * directory (`textmate/awsum/`, placed there by build.gradle.kts) and the IDE reads it in place.
+ */
 class AwsumTextMateBundleProvider : TextMateBundleProvider {
-    override fun getBundles(): List<TextMateBundleProvider.PluginBundle> =
-        listOf(TextMateBundleProvider.PluginBundle("Awsum", bundlePath))
-
-    private val bundlePath: Path by lazy {
-        val dir = Files.createTempDirectory("awsum-textmate-").also {
-            it.toFile().deleteOnExit()
-        }
-        listOf(
-            "package.json",
-            "language-configuration.json",
-            "syntaxes/awsum.tmLanguage.json",
-        ).forEach { rel ->
-            val target = dir.resolve(rel)
-            Files.createDirectories(target.parent)
-            target.toFile().deleteOnExit()
-            javaClass.classLoader.getResourceAsStream("textmate/awsum/$rel")
-                ?.use { input -> Files.copy(input, target) }
-                ?: error("missing bundled resource: textmate/awsum/$rel")
-        }
-        dir
+    override fun getBundles(): List<TextMateBundleProvider.PluginBundle> {
+        val bundle = PluginPathManager.getPluginResource(javaClass, "textmate/awsum")
+            ?: error("cannot locate the plugin directory holding the TextMate bundle")
+        return listOf(TextMateBundleProvider.PluginBundle("Awsum", bundle.toPath()))
     }
 }
