@@ -35,7 +35,7 @@ Invoke via `Help` → `Find Action…` (`Cmd+Shift+A` / `Ctrl+Shift+A`) and type
 
 Every Awsum editor plugin follows the same lockstep policy — see [CHANGELOG.md](CHANGELOG.md) for the reasoning.
 
-Supported editor versions follow Awsum's [platform version policy](https://github.com/awsum-lang/awsum/blob/main/docs/platform-version-policy.md#editors): the minimum is the newest stable release that has been out for at least 7 days.
+Supported editor versions follow the Awsum [platform version policy](https://github.com/awsum-lang/awsum/blob/main/docs/platform-version-policy.md#editors): the minimum is the newest stable release that has been out for at least 7 days.
 
 ## Development
 
